@@ -6,5 +6,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
