@@ -1,13 +1,17 @@
 {
   "name": "@perceived/use-optimistic-state",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/react": "^17.0.14",
-    "react": "^17.0.2"
+    "@testing-library/react-hooks": "^7.0.1",
+    "jest": "^27.0.6",
+    "react": "^17.0.2",
+    "react-test-renderer": "17.0.2"
   },
   "dependencies": {
     "@perceived/optimistic-state": "0.0.0"

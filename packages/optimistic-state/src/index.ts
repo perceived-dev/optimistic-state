@@ -1,26 +1,32 @@
-type OptimisticStateOptions<T, R> = {
+type OptimisticStateOptions<T, R, E> = {
   initialState: T;
-  routine: (state: T) => Promise<R>;
+  routine: (state: T, ...args: any[]) => Promise<R>;
   handleState: (state: T) => void;
   handleResult?: (data: R) => void;
-  handleError?: (error: any) => void;
+  handleError?: (error: E) => void;
 };
 
 const noop = () => {};
 
-export default function optimisticState<T, R = any>({
+export default function optimisticState<T, R = any, E = any>({
   initialState,
   routine, // async routine
   handleState, // optimistic state
   handleResult = noop, // last successful result
   handleError = noop, // last error
-}: OptimisticStateOptions<T, R>) {
+}: OptimisticStateOptions<T, R, E>) {
   let resolvedState = initialState;
   let promises: Promise<R>[] = [];
   let states: T[] = [];
 
-  return (state: T) => {
-    const promise = routine(state);
+  const reset = () => {
+    //reset the promises and states
+    promises = [];
+    states = [];
+  };
+
+  return (state: T, ...args: any[]) => {
+    const promise = routine(state, ...args);
 
     // optimistically update state
     handleState(state);
@@ -31,26 +37,45 @@ export default function optimisticState<T, R = any>({
     // create a new list of promises with existing ones and the new one
     const curPromises = promises.concat([promise]);
 
-    // store the promiseList on promises
+    /**
+     * store the promiseList on promises.
+     * Note, promises will always point to the latest list,
+     * while curPromises will be the list when the handler was called.
+     */
     promises = curPromises;
 
+    promise
+      .then((value) => {
+        // handle only in case its the last promise
+        if (promise === promises[promises.length - 1]) {
+          /**
+           * if the final one is successful we ignore all the
+           * previous promises and treat the resolution to be successful
+           */
+          resolvedState = states[states.length - 1];
+          handleResult(value);
+          reset();
+        }
+      })
+      .catch((err) => {
+        // ignore error here
+      });
+
+    // handle rollbacks
     Promise.allSettled(curPromises).then((values) => {
       // when it is resolved if the promises is updated ignore the previous allSettled value
       if (promises !== curPromises) return;
 
       const lastValue = values[values.length - 1];
-      /**
-       * after resolve if the final one is successful we ignore all the
-       * previous promises and treat the resolution to be successful
-       */
-      if (lastValue.status === 'fulfilled') {
-        resolvedState = states[states.length - 1];
-        handleResult(lastValue.value);
-      } else if (lastValue.status === 'rejected') {
+
+      // if the resolution is successful we don't need to rollback
+      if (lastValue.status === 'fulfilled') return;
+
+      if (lastValue.status === 'rejected') {
         // if the last one is error treat the final resolution as error and rollback to closest success
         handleError(lastValue.reason);
 
-        for (let i = values.length - 1; i >= 0; i++) {
+        for (let i = values.length - 1; i >= 0; i--) {
           // if we find anything resolved previously rollback to it
           const curValue = values[i];
           if (curValue.status === 'fulfilled') {
@@ -67,9 +92,7 @@ export default function optimisticState<T, R = any>({
         }
       }
 
-      //reset the promises and states
-      promises = [];
-      states = [];
+      reset();
     });
   };
 }
