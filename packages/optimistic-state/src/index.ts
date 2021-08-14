@@ -44,8 +44,8 @@ export default function optimisticState<T, R = any, E = any>({
      */
     promises = curPromises;
 
-    promise
-      .then((value) => {
+    promise.then(
+      (value) => {
         // handle only in case its the last promise
         if (promise === promises[promises.length - 1]) {
           /**
@@ -56,10 +56,11 @@ export default function optimisticState<T, R = any, E = any>({
           handleResult(value);
           reset();
         }
-      })
-      .catch((err) => {
+      },
+      (err) => {
         // ignore error here
-      });
+      },
+    );
 
     // handle rollbacks
     Promise.allSettled(curPromises).then((values) => {
