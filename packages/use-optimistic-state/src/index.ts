@@ -27,6 +27,8 @@ export default function useOptimisticState<T, R = any, E = any>(
       initialState,
       routine: (state: T, ...args: any[]) => {
         setLoading(true);
+        // on routine start we should clear the last error
+        setError(undefined);
         return routineRef.current(state, ...args);
       },
       handleState: setState,

@@ -95,4 +95,53 @@ describe('Test optimistic-state', () => {
     expect(result.current.result).toEqual('Result for 1');
     expect(result.current.error).toEqual('Error for 2');
   });
+
+  it('should reset error when new routine starts but should maintain the last result', async () => {
+    const { result } = renderHook(() => useOptimisticState(0, routine));
+
+    act(() => {
+      processActions(
+        [{ state: 1, type: 'success', delay: 300, result: 'Result for 1' }],
+        result.current.updateState,
+      );
+    });
+
+    await act(async () => {
+      await wait(400);
+    });
+
+    act(() => {
+      processActions(
+        [{ state: 2, type: 'error', delay: 300, error: 'Error for 2' }],
+        result.current.updateState,
+      );
+    });
+
+    await act(async () => {
+      await wait(400);
+    });
+
+    expect(result.current.state).toEqual(1);
+    expect(result.current.error).toEqual('Error for 2');
+    expect(result.current.result).toEqual('Result for 1');
+
+    act(() => {
+      processActions(
+        [{ state: 3, type: 'success', delay: 300, result: 'Result for 3' }],
+        result.current.updateState,
+      );
+    });
+
+    expect(result.current.state).toEqual(3);
+    expect(result.current.error).toEqual(undefined);
+    expect(result.current.result).toEqual('Result for 1');
+
+    await act(async () => {
+      await wait(400);
+    });
+
+    expect(result.current.state).toEqual(3);
+    expect(result.current.error).toEqual(undefined);
+    expect(result.current.result).toEqual('Result for 3');
+  });
 });
