@@ -2,6 +2,9 @@
   "name": "root",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "prepublishOnly": "lerna run test && lerna run build"
+  },
   "devDependencies": {
     "lerna": "^4.0.0",
     "typescript": "^4.3.5",
