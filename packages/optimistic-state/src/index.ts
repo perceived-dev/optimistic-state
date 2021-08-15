@@ -1,23 +1,23 @@
-type OptimisticStateOptions<T, R, E> = {
-  initialState: T;
-  routine: (state: T, ...args: any[]) => Promise<R>;
-  handleState: (state: T) => void;
-  handleResult?: (data: R) => void;
-  handleError?: (error: E) => void;
+type OptimisticStateOptions<TState, TResult, TError> = {
+  initialState: TState;
+  routine: (state: TState, ...args: any[]) => Promise<TResult>;
+  handleState: (state: TState) => void;
+  handleResult?: (data: TResult) => void;
+  handleError?: (error: TError) => void;
 };
 
 const noop = () => {};
 
-export default function optimisticState<T, R = any, E = any>({
+export default function optimisticState<TState, TResult = any, TError = any>({
   initialState,
   routine, // async routine
   handleState, // optimistic state
   handleResult = noop, // last successful result
   handleError = noop, // last error
-}: OptimisticStateOptions<T, R, E>) {
+}: OptimisticStateOptions<TState, TResult, TError>) {
   let resolvedState = initialState;
-  let promises: Promise<R>[] = [];
-  let states: T[] = [];
+  let promises: Promise<TResult>[] = [];
+  let states: TState[] = [];
 
   const reset = () => {
     //reset the promises and states
@@ -25,7 +25,7 @@ export default function optimisticState<T, R = any, E = any>({
     states = [];
   };
 
-  return (state: T, ...args: any[]) => {
+  return (state: TState, ...args: any[]) => {
     const promise = routine(state, ...args);
 
     // optimistically update state
