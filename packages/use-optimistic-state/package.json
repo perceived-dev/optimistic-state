@@ -16,7 +16,7 @@
     "react-test-renderer": "17.0.2"
   },
   "dependencies": {
-    "@perceived/optimistic-state": "0.0.0"
+    "@perceived/optimistic-state": "0.0.3"
   },
   "peerDependencies": {
     "react": ">= 16.8.0"
