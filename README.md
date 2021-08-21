@@ -47,7 +47,7 @@ Try simulating all the cases in this example. [https://codesandbox.io/s/use-opti
 
 There is two flavour of optimistic-state right now. Check the API and usage in respective docs.
 
-- Vanilla JS [optimistic-state](packages/optimistic-state/README.md)
-- React hook [use-optimistic-state](packages/use-optimistic-state/README.md)
+- Vanilla JS [optimistic-state](https://github.com/perceived-dev/optimistic-state/tree/main/packages/optimistic-state)
+- React hook [use-optimistic-state](https://github.com/perceived-dev/optimistic-state/tree/main/packages/use-optimistic-state)
 
 React hook `use-optimistic-state` is just a wrapper on top of `optimistic-state`. If you are looking for other lib/framework you can write one using `optimistic-state` and probably contribute back here. 🙂
