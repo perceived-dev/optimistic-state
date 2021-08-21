@@ -4,7 +4,7 @@ React hooks for optimistic state with rollbacks and race condition handling.
 
 ## What and why an optimistic state?
 
-[Optimistic UI and Optimistic States](../.../README.md)
+[Optimistic UI and Optimistic States](https://github.com/perceived-dev/optimistic-state#what-is-an-optimistic-state)
 
 ## Installation
 

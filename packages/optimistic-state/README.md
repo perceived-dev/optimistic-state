@@ -4,7 +4,7 @@ Micro library for optimistic state with rollbacks and race condition handling.
 
 ## What and why an optimistic state?
 
-[Optimistic UI and Optimistic States](../.../README.md)
+[Optimistic UI and Optimistic States](https://github.com/perceived-dev/optimistic-state#what-is-an-optimistic-state)
 
 ## Installation
 
@@ -24,13 +24,13 @@ function routine(state) {
   return syncCounterToServer(state);
 }
 
-let optimisticState;
+let count;
 
 const updateState = optimisticState({
   initialState: 0,
   routine,
   handleState: (state) => {
-    optimisticState = state;
+    count = state;
     // handle optimistic state
     document.querySelector('.current-count').innerHTML = state;
   },
@@ -44,7 +44,7 @@ const updateState = optimisticState({
 });
 
 document.querySelector('#increment-btn').addEventListener('click', () => {
-  updateState(optimisticState + 1);
+  updateState(count + 1);
 });
 ```
 

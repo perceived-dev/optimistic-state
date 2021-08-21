@@ -49,3 +49,5 @@ There is two flavour of optimistic-state right now. Check the API and usage in r
 
 - Vanilla JS [optimistic-state](packages/optimistic-state/README.md)
 - React hook [use-optimistic-state](packages/use-optimistic-state/README.md)
+
+React hook `use-optimistic-state` is just a wrapper on top of `optimistic-state`. If you are looking for other lib/framework you can write one using `optimistic-state` and probably contribute back here. 🙂
